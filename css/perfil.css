@@ -222,11 +222,13 @@ body {
     padding: 10px 24px;
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
+    width: 35px; /*tamaño de imagenes*/
+    height: 35px;
 }
 
 /* Íconos del nav: grises por defecto */
 .nav-item img {
-    width: 35px;
+    width: 35px; /*tamaño de imagenes*/
     height: 35px;
     opacity: 0.35;          /* gris suave */
     transition: opacity 0.15s ease;
