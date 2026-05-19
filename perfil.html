@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Subnet — Perfil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Subnet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <header class="topbar">
+        <span class="topbar-brand">Subnet</span>
+        <button class="topbar-btn" id="logoutBtn" aria-label="Cerrar sesión">
+            <img src="assets/icons/log_out.png" alt="Cerrar sesión" width="28" height="28">
+        </button>
+    </header>
+
+    <div class="divider"></div>
+
+    <!-- Cuerpo principal -->
+    <main class="perfil-main">
+
+        <p class="seccion-label">Mi perfil</p>
+
+        <div class="divider"></div>
+
+        <!-- Tarjeta de perfil -->
+        <div class="perfil-card">
+
+            <!-- Avatar -->
+            <div class="avatar-wrapper">
+                <div class="avatar">
+                    <img src="assets/icons/User.png" alt="Avatar" width="72" height="72">
+                </div>
+                <button class="avatar-edit" aria-label="Editar foto de perfil">
+                    <img src="assets/icons/lapiz.svg" alt="Editar" width="40" height="40">
+                </button>
+            </div>
+
+            <!-- Datos del usuario -->
+            <div class="perfil-info">
+
+                <div class="info-field">
+                    <span class="info-label">Usuario</span>
+                    <span class="info-value" id="displayUsername">User1234</span>
+                </div>
+
+                <div class="info-field">
+                    <span class="info-label">Correo electrónico</span>
+                    <span class="info-value" id="displayEmail">Usuario@gmail.com</span>
+                </div>
+
+                <div class="info-field">
+                    <span class="info-label">Contraseña</span>
+                    <div class="password-row">
+                        <span class="info-value" id="displayPassword">••••••••••••</span>
+                        <button class="toggle-password" id="togglePassword" aria-label="Mostrar/ocultar contraseña">
+                            <img src="assets/icons/Eye_off.svg" alt="Mostrar contraseña" id="eyeIcon" width="22" height="22">
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Botón flotante "+" -->
+    <button class="fab" aria-label="Nueva publicación">
+        <img src="assets/icons/Plus.svg" alt="Nueva publicación" width="56" height="56">
+    </button>
+
+    <!-- Barra de navegación inferior -->
+    <nav class="bottom-nav">
+
+        <a href="perfil.html" class="nav-item" data-page="perfil" aria-label="Perfil">
+            <img src="assets/icons/User.svg" alt="Perfil" width="30" height="30">
+        </a>
+
+        <a href="inicio.html" class="nav-item" data-page="inicio" aria-label="Inicio">
+            <img src="assets/icons/Home.svg" alt="Inicio" width="30" height="30">
+        </a>
+
+        <a href="publicaciones.html" class="nav-item" data-page="publicaciones" aria-label="Publicaciones">
+            <img src="assets/icons/Book.svg" alt="Publicaciones" width="30" height="30">
+        </a>
+
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="js/perfil.js"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then(() => console.log("Service Worker registrado"))
+                .catch((error) => console.log("Error:", error));
+        }
+    </script>
+
+</body>
+</html>
