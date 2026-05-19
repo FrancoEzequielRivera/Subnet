@@ -226,8 +226,8 @@ body {
 
 /* Íconos del nav: grises por defecto */
 .nav-item img {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     opacity: 0.35;          /* gris suave */
     transition: opacity 0.15s ease;
 }
