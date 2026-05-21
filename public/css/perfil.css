@@ -1,0 +1,239 @@
+/* ===========================
+   Layout general del perfil
+   =========================== */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--color-bg);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===========================
+   Barra superior
+   =========================== */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: var(--color-bg);
+    border-bottom: 2px solid black;
+}
+
+/* "Subnet" → 32px, Hammersmith One, stroke visual fino */
+.topbar-brand {
+    font-family: var(--font-brand);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--color-text);
+    letter-spacing: -0.3px;
+    /* Simula el trazo de 0.5 de Figma con stroke sobre el texto */
+    -webkit-text-stroke: 0.5px #111111;
+}
+
+.topbar-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ===========================
+   Divisor
+   =========================== */
+.divider {
+    width: 100%;
+    height: 1px;
+    background: #e5e5e5;
+}
+
+/* ===========================
+   Cuerpo del perfil
+   =========================== */
+.perfil-main {
+    flex: 1;
+    padding-bottom: 80px;
+}
+
+/* "Mi perfil" → 16px */
+.seccion-label {
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: bolder;
+    color: var(--color-text);
+}
+
+/* ===========================
+   Tarjeta de perfil
+   =========================== */
+.perfil-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 28px 24px;
+}
+
+/* ===========================
+   Avatar
+   =========================== */
+.avatar-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    /* Sin borde ni background: el PNG ya trae su propio círculo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* no recorta, muestra el ícono completo */
+}
+
+/* Botón del lápiz sobre el avatar */
+.avatar-edit {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 28px;
+    height: 28px;
+    /*border-radius: 50%;*/
+    background: white;
+    /*border: 1.5px solid #cccccc;*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ===========================
+   Información del usuario
+   =========================== */
+.perfil-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 6px;
+}
+
+.info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+/* "Usuario", "Correo electrónico", "Contraseña" → 16px */
+.info-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* Valores de los campos → 15px */
+.info-value {
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--color-text);
+}
+
+/* Fila de contraseña: valor + ícono de ojo */
+.password-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ===========================
+   Botón flotante "+"
+   =========================== */
+.fab {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.fab img {
+    width: 56px;
+    height: 56px;
+}
+
+.fab:active {
+    transform: scale(0.92);
+    opacity: 0.85;
+}
+
+/* ===========================
+   Barra de navegación inferior
+   =========================== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--color-bg);
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    z-index: 100;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Íconos del nav: grises por defecto */
+.nav-item img {
+    width: 35px; /*tamaño de imagenes*/
+    height: 35px;
+    opacity: 0.35;          /* gris suave */
+    transition: opacity 0.15s ease;
+}
+
+/* Ítem activo: ícono completamente negro */
+.nav-item.active img {
+    opacity: 1;
+}
