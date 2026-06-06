@@ -45,9 +45,11 @@
     </main>
 
     <!-- Botón flotante "+" -->
-    <button class="fab" aria-label="Nueva publicación">
+     <a href="mis_publicaciones.html">
+        <button class="fab" aria-label="Nueva publicación">
         <img src="assets/icons/Plus.svg" alt="Nueva publicación" width="56" height="56">
     </button>
+     </a>
 
     <!-- Barra de navegación inferior -->
     <nav class="bottom-nav">
@@ -60,7 +62,7 @@
             <img src="assets/icons/Home.svg" alt="Feed">
         </a>
 
-        <a href="publicaciones.html" class="nav-item" data-page="publicaciones" aria-label="Publicaciones">
+        <a href="mis_publicaciones.html" class="nav-item" data-page="publicaciones" aria-label="Publicaciones">
             <img src="assets/icons/Book.svg" alt="Publicaciones">
         </a>
 
@@ -69,7 +71,7 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
-    <script src="js/feed.js"></script>
+    <script type="module" src="./js/feed.js"></script>
 
     <script>
         if ("serviceWorker" in navigator) {

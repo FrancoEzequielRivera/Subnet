@@ -3,11 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-
     <title>Subnet — Publicación</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Subnet">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,127 +22,86 @@
 
 <body>
 
-    <!-- Topbar -->
+    <!-- Barra superior -->
     <header class="topbar">
-
         <span class="topbar-brand">Subnet</span>
-
-        <button class="topbar-btn" aria-label="Compartir">
-            <img src="assets/icons/Log_out.svg"
-                 alt="Compartir"
-                 width="28"
-                 height="28">
+        <button class="topbar-btn" id="logoutBtn" aria-label="Cerrar sesión">
+            <img src="assets/icons/Log_out.svg" alt="Cerrar sesión" width="28" height="28">
         </button>
-
     </header>
 
     <div class="divider"></div>
 
-    <!-- Main -->
-    <main class="publicacion-main">
+    <main class="pub-main">
 
-        <!-- Publicación -->
-        <section class="pub-detalle">
-
-            <div class="pub-header">
-                <img src="assets/icons/User_feed.svg" alt="Avatar">
-                <span class="pub-username">User123</span>
-            </div>
-
-            <h1 class="pub-titulo">Mi Publicación</h1>
-
-            <p class="pub-cuerpo">
-                Este es un texto de prueba para probar la cantidad
-                de texto que puedo colocar dentro de esta caja de
-                pruebas en publicación y ahora estoy en la sección
-                de una publicación.
-            </p>
-
-            <div class="pub-footer">
-
-                <button class="pub-accion">
-                    <img src="assets/icons/Message.svg" alt="">
-                    <span>100</span>
-                </button>
-
-                <button class="pub-accion">
-                    <img src="assets/icons/Heart.svg" alt="">
-                    <span>100</span>
-                </button>
-
-            </div>
-
+        <!-- Publicación completa -->
+        <section class="pub-detalle" id="pubDetalle">
+            <!-- Se rellena desde JS -->
         </section>
 
         <div class="divider"></div>
 
-        <!-- Comentarios -->
-        <section class="comentarios-section">
+        <!-- Sección de comentarios -->
+        <section class="comentarios-seccion">
 
-            <h2 class="comentarios-title">Comentarios</h2>
+            <h2 class="comentarios-titulo">Comentarios</h2>
 
-            <div class="comentario-card">
-
-                <div class="comentario-header">
-                    <img src="assets/icons/User_feed.svg" alt="">
-                    <span class="comentario-usuario">User123</span>
-                </div>
-
-                <p class="comentario-texto">
-                    Este es un texto de prueba para probar la cantidad
-                    de texto que puedo colocar dentro de esta caja de pruebas
-                </p>
-
+            <!-- Lista de comentarios -->
+            <div id="listadoComentarios">
+                <!-- Se rellena desde JS -->
             </div>
 
-            <div class="comentario-card">
-
-                <div class="comentario-header">
-                    <img src="assets/icons/User_feed.svg" alt="">
-                    <span class="comentario-usuario">User123</span>
+            <!-- Campo para escribir un comentario -->
+            <div class="comentario-form">
+                <img src="assets/icons/User_feed.svg" alt="Tu avatar" class="comentario-avatar">
+                <div class="comentario-input-wrapper">
+                    <input
+                        type="text"
+                        id="nuevoComentario"
+                        placeholder="Escribí un comentario..."
+                        autocomplete="off"
+                        maxlength="300"
+                    >
+                    <button id="enviarComentario" aria-label="Enviar comentario">
+                        &#9658;
+                    </button>
                 </div>
-
-                <p class="comentario-texto">
-                    Este es un texto de prueba para probar la cantidad
-                    de texto que puedo colocar dentro de esta caja de pruebas
-                </p>
-
-            </div>
-
-            <div class="comentario-card">
-
-                <div class="comentario-header">
-                    <img src="assets/icons/User_feed.svg" alt="">
-                    <span class="comentario-usuario">User123</span>
-                </div>
-
-                <p class="comentario-texto">
-                    Este es un texto de prueba para probar la cantidad
-                    de texto que puedo colocar dentro de esta caja de pruebas
-                </p>
-
             </div>
 
         </section>
 
     </main>
 
-    <!-- Bottom nav -->
+    <!-- Barra de navegación inferior -->
     <nav class="bottom-nav">
 
-        <a href="perfil.html" class="nav-item">
+        <a href="perfil.html" class="nav-item" data-page="perfil" aria-label="Perfil">
             <img src="assets/icons/User.svg" alt="Perfil">
         </a>
 
-        <a href="feed.html" class="nav-item active">
+        <a href="feed.html" class="nav-item" data-page="feed" aria-label="Feed">
             <img src="assets/icons/Home.svg" alt="Feed">
         </a>
 
-        <a href="publicaciones.html" class="nav-item">
+        <a href="mis_publicaciones.html" class="nav-item" data-page="publicaciones" aria-label="Publicaciones">
             <img src="assets/icons/Book.svg" alt="Publicaciones">
         </a>
 
     </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script type="module" src="js/publicacion.js"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then(() => console.log("Service Worker registrado"))
+                .catch((error) => console.log("Error:", error));
+        }
+    </script>
 
 </body>
 </html>

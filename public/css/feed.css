@@ -89,7 +89,8 @@ body {
 .pub-autor img {
     width: 24px;
     height: 24px;
-    opacity: 0.7;
+    border-radius: 50%;
+    object-fit: cover
 }
 
 .pub-username {
@@ -155,10 +156,15 @@ body {
     border-color: #D9D9D9;
 }
 
-.pub-accion img {
+.pub-accion [data-tipo="comentario"] img {
     width: 27px;
     height: 27px;
-    opacity: 0.6;
+}
+
+.pub-accion svg {
+    width: 27px;
+    height: 27px;
+    color: white;
 }
 
 .pub-accion span {
@@ -167,9 +173,10 @@ body {
     color: #555555;
 }
 
-/* Corazón activo (liked) */
-.pub-accion.liked img {
+/* Liked */
+.pub-accion.liked svg {
     opacity: 1;
+    color: #ff0000d8;
 }
 
 /* ===========================

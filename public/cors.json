@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://subnet-d40fa.web.app"],
+    "method": ["GET", "POST", "PUT", "DELETE"],
+    "maxAgeSeconds": 3600
+  }
+]

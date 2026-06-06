@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Subnet — Mis publicaciones</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Subnet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hammersmith+One&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mis_publicaciones.css">
+</head>
+
+<body>
+
+    <!-- Barra superior -->
+    <header class="topbar">
+        <span class="topbar-brand">Subnet</span>
+        <button class="topbar-btn" id="logoutBtn" aria-label="Cerrar sesión">
+            <img src="assets/icons/Log_out.svg" alt="Cerrar sesión" width="28" height="28">
+        </button>
+    </header>
+
+    <div class="divider"></div>
+
+    <main class="mispub-main">
+
+        <!-- ── Formulario nueva publicación ── -->
+        <section class="nueva-pub-seccion" id="nuevaPubSeccion">
+
+            <div class="nueva-pub-header">
+                <span class="nueva-pub-titulo">Nueva publicación</span>
+                <button class="nueva-pub-cerrar" id="cerrarForm" aria-label="Cerrar formulario">
+                    <!-- Ícono ⊗ dibujado como SVG para no depender de archivo -->
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="8" y1="8" x2="16" y2="16"/>
+                        <line x1="16" y1="8" x2="8" y2="16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="nueva-pub-form" id="nuevaPubForm">
+                <input
+                    type="text"
+                    id="inputTitulo"
+                    class="form-titulo"
+                    placeholder="Ingrese un título..."
+                    maxlength="100"
+                >
+                <textarea
+                    id="inputCuerpo"
+                    class="form-cuerpo"
+                    placeholder="Ingrese texto..."
+                    maxlength="2000"
+                ></textarea>
+                <button class="btn-publicar" id="btnPublicar">Publicar</button>
+            </div>
+
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ── Lista de mis publicaciones ── -->
+        <div id="listadoMisPublicaciones">
+            <!-- Se genera desde JS -->
+        </div>
+
+    </main>
+
+    <!-- Barra de navegación inferior -->
+    <nav class="bottom-nav">
+
+        <a href="perfil.html" class="nav-item" data-page="perfil" aria-label="Perfil">
+            <img src="assets/icons/User.svg" alt="Perfil">
+        </a>
+
+        <a href="feed.html" class="nav-item" data-page="feed" aria-label="Feed">
+            <img src="assets/icons/Home.svg" alt="Feed">
+        </a>
+
+        <a href="mis_publicaciones.html" class="nav-item" data-page="mis_publicaciones" aria-label="Mis publicaciones">
+            <img src="assets/icons/Book.svg" alt="Mis publicaciones">
+        </a>
+
+    </nav>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <p class="modal-texto">¿Eliminar esta publicación?</p>
+            <div class="modal-acciones">
+                <button class="modal-btn modal-cancelar" id="modalCancelar">Cancelar</button>
+                <button class="modal-btn modal-confirmar" id="modalConfirmar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/mis_publicaciones.js"></script>
+
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then(() => console.log("Service Worker registrado"))
+                .catch((error) => console.log("Error:", error));
+        }
+    </script>
+
+</body>
+</html>

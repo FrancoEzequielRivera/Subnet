@@ -91,7 +91,6 @@ body {
     width: 110px;
     height: 110px;
     border-radius: 50%;
-    /* Sin borde ni background: el PNG ya trae su propio círculo */
     display: flex;
     align-items: center;
     justify-content: center;
