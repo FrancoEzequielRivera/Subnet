@@ -182,7 +182,7 @@ function renderizarComentarios(lista) {
         card.classList.add("comentario-card");
         card.innerHTML = `
             <div class="comentario-autor">
-                <img src="assets/icons/User.svg" alt="Avatar de ${comentario.usuario}">
+                <img src="${comentario.fotoPerfil || 'assets/icons/User.svg'}" alt="Avatar de ${comentario.usuario}">
                 <span class="comentario-username">${comentario.usuario}</span>
             </div>
             <p class="comentario-texto">${comentario.texto}</p>
@@ -204,6 +204,7 @@ async function enviarComentario() {
     const datosUsuario = docSnap.data();
 
     const usuario = datosUsuario.username
+    const fotoPerfil   = datosUsuario.fotoPerfil || "";
 
     if (!texto) return;
     if (!usuarioAuth) return;
@@ -215,6 +216,7 @@ async function enviarComentario() {
         await addDoc(collection(db, "publicaciones", idPublicacion, "comentarios"), {
             uid:       usuarioAuth.uid,
             usuario:   usuario,
+            fotoPerfil,
             texto,
             createdAt: serverTimestamp()
         });
@@ -237,7 +239,7 @@ async function enviarComentario() {
         card.classList.add("comentario-card");
         card.innerHTML = `
             <div class="comentario-autor">
-                <img src="assets/icons/User.svg" alt="Tu avatar">
+                <img src="${fotoPerfil || 'assets/icons/User.svg'}" alt="Tu avatar">
                 <span class="comentario-username">${usuario}</span>
             </div>
             <p class="comentario-texto">${texto}</p>
