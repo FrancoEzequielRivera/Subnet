@@ -3,11 +3,11 @@
 // ===========================
 import "./auth-guard.js";
 import "./logout.js";
-
+ 
 // Firebase
 import { auth } from "./firebase.js";
 import { db } from "./firebase.js";
-
+ 
 import {
     collection,
     getDocs,
@@ -18,9 +18,11 @@ import {
     updateDoc,
     increment,
     arrayUnion,
-    arrayRemove
+    arrayRemove,
+    limit,
+    startAfter
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-
+ 
 // ===========================
 // Toast
 // ===========================
@@ -30,7 +32,7 @@ function showToast(mensaje, duracion = 3000) {
     toast.classList.add("show");
     setTimeout(() => toast.classList.remove("show"), duracion);
 }
-
+ 
 // ===========================
 // Navegación activa
 // ===========================
@@ -38,7 +40,7 @@ function marcarNavActiva() {
     const archivoActual = window.location.pathname.split("/").pop() || "index.html";
     const paginaActual  = archivoActual.replace(".html", "");
     const navItems      = document.querySelectorAll(".nav-item");
-
+ 
     navItems.forEach((item) => {
         if (item.dataset.page === paginaActual) {
             item.classList.add("active");
@@ -47,46 +49,108 @@ function marcarNavActiva() {
         }
     });
 }
-
+ 
 marcarNavActiva();
-
+ 
 // ===========================
-// Traer publicaciones de todos los usuarios
+// Paginación
+// ===========================
+const PUBLICACIONES_POR_PAGINA = 10;
+let ultimoDoc = null;
+let cargando  = false;
+let hayMas    = true;
+ 
+// ===========================
+// Traer publicaciones
 // ===========================
 async function obtenerPublicaciones() {
+    if (!navigator.onLine) {
+
+        // Solo muestra cache en la primera carga
+        if (!ultimoDoc) {
+            const cache = localStorage.getItem("feedCache");
+            if (cache) {
+                hayMas = false;
+                showToast("Sin conexión. Mostrando publicaciones guardadas.");
+                return JSON.parse(cache);
+            }
+            showToast("Sin conexión y sin contenido guardado.");
+        } else {
+            // Si ya había cargado algo y scrolleó sin internet
+            hayMas = false;
+            ocultarSpinner();
+            showToast("Sin conexión. No se pueden cargar más publicaciones.");
+        }
+
+        return [];
+    }
+    
     try {
-        const publis = query(
-            collection(db, "publicaciones"),
-            orderBy("createdAt", "desc")
-        );
-        const snapshot = await getDocs(publis);
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const q = ultimoDoc
+            ? query(
+                collection(db, "publicaciones"),
+                orderBy("createdAt", "desc"),
+                startAfter(ultimoDoc),
+                limit(PUBLICACIONES_POR_PAGINA)
+            )
+            : query(
+                collection(db, "publicaciones"),
+                orderBy("createdAt", "desc"),
+                limit(PUBLICACIONES_POR_PAGINA)
+            );
+
+        const snapshot = await getDocs(q);
+
+        if (snapshot.docs.length < PUBLICACIONES_POR_PAGINA) {
+            hayMas = false;
+            ocultarSpinner();
+        }
+
+        if (snapshot.docs.length > 0) {
+            ultimoDoc = snapshot.docs[snapshot.docs.length - 1];
+        }
+
+        const lista = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        // Solo guarda en caché la primera carga (las 10 más recientes)
+        if (!ultimoDoc || snapshot.docs.length === PUBLICACIONES_POR_PAGINA) {
+            localStorage.setItem("feedCache", JSON.stringify(lista));
+        }
+
+        return lista;
 
     } catch (error) {
         console.error(error);
-        showToast("Error al cargar publicaciones");
+
+        // Sin internet → intenta mostrar el caché
+        const cache = localStorage.getItem("feedCache");
+
+        if (cache) {
+            hayMas = false; // sin internet no tiene sentido intentar cargar más
+            showToast("Sin conexión. Mostrando publicaciones guardadas.");
+            return JSON.parse(cache);
+        }
+
+        showToast("Sin conexión y sin contenido guardado.");
         return [];
     }
 }
-
+ 
 // ===========================
 // Renderizar tarjetas
 // ===========================
 function renderizarPublicaciones(lista) {
     const contenedor = document.getElementById("listadoPublicaciones");
-    contenedor.innerHTML = "";
-
-    const usuario = auth.currentUser;
-
+    const usuario    = auth.currentUser;
+ 
     lista.forEach((pub) => {
         const card = document.createElement("div");
         card.classList.add("pub-card");
         card.dataset.id = pub.id;
-
-        // Verifica si el usuario ya dio like
+ 
         const likesUsuarios = pub.likesUsuarios ? pub.likesUsuarios : [];
         const yaLiked = usuario && likesUsuarios.indexOf(usuario.uid) !== -1;
-
+ 
         card.innerHTML = `
             <div class="pub-header">
                 <div class="pub-autor">
@@ -96,10 +160,10 @@ function renderizarPublicaciones(lista) {
                 </div>
                 <span class="pub-editado ${pub.editado ? "visible" : ""}">Editado</span>
             </div>
-
+ 
             <p class="pub-titulo">${pub.titulo}</p>
             <p class="pub-cuerpo">${pub.cuerpo}</p>
-
+ 
             <div class="pub-footer">
                 <button class="pub-accion" data-tipo="comentario" data-id="${pub.id}" aria-label="Comentarios">
                     <img src="assets/icons/Message.svg" alt="Comentarios">
@@ -113,106 +177,147 @@ function renderizarPublicaciones(lista) {
                 </button>
             </div>
         `;
-
+ 
         contenedor.appendChild(card);
-
-        // Escucha cambios en tiempo real del contador de likes
+ 
         detectarLike(pub.id);
-
+ 
         card.addEventListener("click", (e) => {
             if (!e.target.closest(".pub-accion")) {
                 window.location.href = `publicacion.html?id=${pub.id}`;
             }
         });
     });
-
+ 
     agregarEventos();
 }
-
+ 
 // ===========================
-// Escucha en tiempo real el contador de likes de una publicación.
-// Si otro usuario da like, el número se actualiza solo sin recargar.
+// Spinner de carga
+// Se muestra mientras se cargan más publicaciones
+// ===========================
+function mostrarSpinner() {
+    const spinner = document.getElementById("spinnerCarga");
+    if (spinner) spinner.style.display = "block";
+}
+ 
+function ocultarSpinner() {
+    const spinner = document.getElementById("spinnerCarga");
+    if (spinner) spinner.style.display = "none";
+}
+ 
+// ===========================
+// Scroll infinito
+//
+// Cuando el usuario llega al final de la página,
+// carga las siguientes 10 publicaciones
+// ===========================
+window.addEventListener("scroll", async () => {
+ 
+    // Distancia desde el top hasta el final del contenido
+    const alturaTotal    = document.documentElement.scrollHeight;
+    // Cuánto scrolleó el usuario
+    const scrollActual   = window.scrollY;
+    // Altura visible de la ventana
+    const alturaVentana  = window.innerHeight;
+ 
+    // Si llegó a 200px del final, carga más
+    const cercaDelFinal  = alturaTotal - scrollActual - alturaVentana < 200;
+ 
+    if (cercaDelFinal && !cargando && hayMas) {
+        cargando = true;
+        mostrarSpinner();
+ 
+        const nuevas = await obtenerPublicaciones();
+        renderizarPublicaciones(nuevas);
+ 
+        cargando = false;
+        ocultarSpinner();
+    }
+});
+ 
+// ===========================
+// Escucha en tiempo real el contador de likes
 // ===========================
 function detectarLike(id) {
     const ref = doc(db, "publicaciones", id);
-
+ 
     onSnapshot(ref, (docSnap) => {
         if (!docSnap.exists()) return;
-
+ 
         const data      = docSnap.data();
         const spanLikes = document.getElementById(`likes-${id}`);
-
+ 
         if (spanLikes) {
             spanLikes.textContent = data.likes || 0;
         }
     });
 }
-
+ 
 // ===========================
 // Eventos de interacción
 // ===========================
 function agregarEventos() {
-
-    // LIKE
+ 
     document.querySelectorAll(".pub-accion[data-tipo='like']").forEach((btn) => {
-
+ 
         btn.addEventListener("click", async () => {
-
+ 
             const usuario = auth.currentUser;
             if (!usuario) return;
-
+ 
             const id    = btn.dataset.id;
             const ref   = doc(db, "publicaciones", id);
             const liked = btn.classList.contains("liked");
-
+ 
             btn.disabled = true;
-
+ 
             try {
-
+ 
                 if (liked) {
-
                     btn.classList.remove("liked");
-
                     await updateDoc(ref, {
                         likes:         increment(-1),
                         likesUsuarios: arrayRemove(usuario.uid)
                     });
-
                 } else {
-
                     btn.classList.add("liked");
-
                     await updateDoc(ref, {
                         likes:         increment(1),
                         likesUsuarios: arrayUnion(usuario.uid)
                     });
                 }
-
+ 
             } catch (error) {
                 console.error(error);
                 showToast("Error al dar like");
-                // Revierte el cambio visual si falla
                 btn.classList.toggle("liked");
             } finally {
                 btn.disabled = false;
             }
         });
     });
-
-    // COMENTARIO
+ 
     document.querySelectorAll(".pub-accion[data-tipo='comentario']").forEach((btn) => {
         btn.addEventListener("click", () => {
             window.location.href = `publicacion.html?id=${btn.dataset.id}`;
         });
     });
 }
-
+ 
 // ===========================
 // Inicio
 // ===========================
 async function iniciarFeed() {
     const publicaciones = await obtenerPublicaciones();
+ 
+    if (publicaciones.length === 0) {
+        document.getElementById("listadoPublicaciones").innerHTML =
+            `<p style="padding:24px; font-size:14px; color:#aaaaaa; font-weight:300; text-align:center;">Todavía no hay publicaciones.</p>`;
+        return;
+    }
+ 
     renderizarPublicaciones(publicaciones);
 }
-
+ 
 iniciarFeed();

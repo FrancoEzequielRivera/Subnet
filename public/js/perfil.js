@@ -161,10 +161,3 @@ inputFoto.addEventListener("change", async () => {
         inputFoto.value = "";
     }
 });
-
-// ===========================
-// Toggle contraseña
-// ===========================
-document.getElementById("togglePassword").addEventListener("click", () => {
-    showToast("Cambio de contraseña (próximamente)");
-});

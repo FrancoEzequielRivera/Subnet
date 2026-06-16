@@ -246,3 +246,12 @@ body {
 .nav-item.active img {
     opacity: 1;
 }
+
+#spinnerCarga{
+    display: none;
+    text-align: center;
+    padding: 24px;
+    font-size: 14px;
+    color: #aaaaaa;
+    font-weight: 300;
+}

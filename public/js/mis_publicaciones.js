@@ -330,6 +330,17 @@ async function obtenerMisPublicaciones() {
     const usuario = auth.currentUser;
     if (!usuario) return [];
 
+    // Verifica si hay internet antes de consultar Firestore
+    if (!navigator.onLine) {
+        const cache = localStorage.getItem("misPublicacionesCache");
+        if (cache) {
+            showToast("Sin conexión. Mostrando publicaciones guardadas.");
+            return JSON.parse(cache);
+        }
+        showToast("Sin conexión y sin contenido guardado.");
+        return [];
+    }
+
     try {
         const q = query(
             collection(db, "publicaciones"),
@@ -337,11 +348,21 @@ async function obtenerMisPublicaciones() {
             orderBy("createdAt", "desc")
         );
         const snapshot = await getDocs(q);
-        return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const lista = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+        const aGuardar = lista.slice(0, 10);
+        localStorage.setItem("misPublicacionesCache", JSON.stringify(aGuardar));
+
+        return lista;
 
     } catch (error) {
         console.error(error);
-        showToast("Error al cargar publicaciones");
+        const cache = localStorage.getItem("misPublicacionesCache");
+        if (cache) {
+            showToast("Sin conexión. Mostrando publicaciones guardadas.");
+            return JSON.parse(cache);
+        }
+        showToast("Error al cargar publicaciones.");
         return [];
     }
 }
